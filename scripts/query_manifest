@@ -1,0 +1,47 @@
+#!/bin/bash
+
+CMD=$1
+REPO=$2
+
+MANIFEST=$ROOT_PATH/build_manifest.json
+
+if [ $(jq "has(\"$REPO\")" $MANIFEST) == "false" ]; then
+  echo "Unknown repository $REPO in build_mainifest.json"
+  exit 1
+fi
+
+case "$CMD" in
+  dockerfile)
+    jq -r ".\"$REPO\".dockerfile // \"Dockerfile\"" $MANIFEST
+    ;;
+  buildDir)
+    jq -r ".\"$REPO\".buildDir" $MANIFEST
+    ;;
+  projectDir)
+    jq -r ".\"$REPO\".projectDir // .\"$REPO\".buildDir" $MANIFEST
+    ;;
+  dependencies)
+    ALL_DEPS=()
+    add_deps() {
+      DEPS=($(jq -r ".\"$1\".dependencies // [] | .[]" $MANIFEST))
+      ALL_DEPS=(${ALL_DEPS[@]} ${DEPS[@]})
+      for DEP in "${DEPS[@]}"; do
+        add_deps $DEP
+      done
+    }
+    add_deps $REPO
+    printf "%s\n" "${ALL_DEPS[@]}" | sort | uniq
+    ;;
+  rebuildPatterns)
+    ALL_PATTERNS=($(jq -r ".\"$REPO\".rebuildPatterns | .[]" $MANIFEST))
+    DEPS=($($0 dependencies $REPO))
+    for DEP in "${DEPS[@]}"; do
+      PATTERNS=($(jq -r ".\"$DEP\".rebuildPatterns | .[]" $MANIFEST))
+      ALL_PATTERNS=(${ALL_PATTERNS[@]} ${PATTERNS[@]})
+    done
+    printf "%s\n" "${ALL_PATTERNS[@]}" | sort | uniq
+    ;;
+  inSubmodule)
+    cd $($0 buildDir $REPO)
+    git rev-parse --show-superproject-working-tree | grep -E . > /dev/null
+esac
