@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 CMD=$1
 REPO=$2
@@ -41,7 +42,14 @@ case "$CMD" in
     done
     printf "%s\n" "${ALL_PATTERNS[@]}" | sort | uniq
     ;;
-  inSubmodule)
-    cd $($0 buildDir $REPO)
-    git rev-parse --show-superproject-working-tree | grep -E . > /dev/null
+  submodulePath)
+    DIR=$($0 buildDir $REPO)
+    # The build dir maybe deep in the submodule. In which case we can't cd to it.
+    # Move up the path till we succeed.
+    while [ ! -d $DIR ]; do
+      DIR=$(dirname $DIR)
+    done
+    if [ "$(git ls-tree HEAD $DIR | awk '{print $2}')" = "commit" ]; then
+      git ls-tree HEAD $DIR | awk '{print $4}'
+    fi
 esac
