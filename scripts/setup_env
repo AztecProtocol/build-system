@@ -3,8 +3,8 @@
 # as the other build scripts assume these global variables are set. The global variables are written to
 # the file in $BASH_ENV, which means that any new bash shells launched within the lifetime of the machine
 # context will have these variables set. This happens for example when CircleCI runs a new "step".
-# The script should be sourced, e.g:
-#   source setup_env
+# The script should be sourced from the root of the repository, e.g:
+#   source ./build-system/scripts/setup_env
 # This ensures the resultant variables are set in the calling shell.
 set -e
 
@@ -14,9 +14,9 @@ JOB_NAME=$3
 GIT_REPOSITORY_URL=$4
 BRANCH=$5
 
-BUILD_SYSTEM_PATH=$(pwd)
-PROJECT=$(cat ../PROJECT)
-VERSION=$(cat ../VERSION)
+BUILD_SYSTEM_PATH=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
+PROJECT=$(cat PROJECT)
+VERSION=$(cat VERSION)
 
 echo "COMMIT_HASH=$COMMIT_HASH"
 echo "COMMIT_TAG=$COMMIT_TAG"
@@ -63,10 +63,10 @@ if [ -z "$BASH_ENV" ]; then
   BASH_ENV=$(mktemp)
 fi
 
-echo export ROOT_PATH=$(cd .. && echo ${PWD}) >> $BASH_ENV
+echo export ROOT_PATH=$PWD >> $BASH_ENV
 echo export BUILD_SYSTEM_PATH=$BUILD_SYSTEM_PATH >> $BASH_ENV
 echo export SSH_CONFIG_PATH=$BUILD_SYSTEM_PATH/remote/ssh_config >> $BASH_ENV
-echo export PATH=$PATH:$BUILD_SYSTEM_PATH >> $BASH_ENV
+echo export PATH=$PATH:$BUILD_SYSTEM_PATH/scripts >> $BASH_ENV
 echo export AWS_DEFAULT_REGION=eu-west-2 >> $BASH_ENV
 echo export ECR_REGION=us-east-2 >> $BASH_ENV
 echo export AWS_ACCOUNT=278380418400 >> $BASH_ENV
