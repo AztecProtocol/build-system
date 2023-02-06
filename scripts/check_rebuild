@@ -1,5 +1,6 @@
 #!/bin/bash
 # Succeeds if any files matching the rebuild patterns, have changed since the base commit.
+# The rebuild patterns are taken from the build manifest (computed from set of dependencies).
 set -euo pipefail
 
 BASE_COMMIT=$1

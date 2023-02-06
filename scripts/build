@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Builds a docker image and pushes it to it's repository. Leverages caches where possible.
-# Cached images include previous successfully built images built on this branch.
+# Cached images include previous successfully built images (including multi-stages) built on this branch.
 # The images output are cache images, meaning they will eventually get purged.
 # The deploy phase will tag the images such that they become permanent.
 #
@@ -9,6 +9,18 @@
 # example: ./build aztec-connect-cpp-x86_64-linux-clang
 # output image:
 #   278380418400.dkr.ecr.us-east-2.amazonaws.com/aztec-connect-cpp-x86_64-linux-clang:cache-deadbeefcafebabe1337c0d3
+#
+# In more detail:
+# - Init all submodules required to build this project.
+# - Log into cache ECR, and ensures repository exists.
+# - Checks if current project needs to be rebuilt, if not, retag previous image with current commit hash and early out.
+# - Validate any terraform that may exist.
+# - Pull down dependent images that we do not control (e.g. alpine etc).
+# - For images we do control, pull the image we've built (or retagged) as part of this build.
+# - For each "named stage" (usually intermittent builders before creating final image), pull previous to prime the cache, build and push the results.
+# - Pull previous project image to use it as a layer cache if it exists.
+# - Perform the build of the image itself. With the cache primed we should only have to rebuild the necessary layers.
+# - Push the image tagged with the commit hash to the cache.
 
 set -euo pipefail
 

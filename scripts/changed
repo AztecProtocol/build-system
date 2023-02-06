@@ -1,4 +1,5 @@
 #!/bin/bash
+# Returns true if the file at path has changed since the LAST_SUCCESSFUL_COMMIT.
 LAST_SUCCESSFUL_COMMIT=$1
 
 [ -n "$COMMIT_HASH" ] || exit 1
