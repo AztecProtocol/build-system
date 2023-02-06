@@ -21,10 +21,9 @@ git submodule update --init build-system
 
 echo "Git checkout completed."
 
-cd .circleci
 BASH_ENV=/tmp/bash_env
 echo "Calling setup env..."
-source ./setup_env "$COMMIT_HASH" "$COMMIT_TAG" "$JOB_NAME" "$GIT_REPOSITORY_URL"
+source ./build-system/scripts/setup_env "$COMMIT_HASH" "$COMMIT_TAG" "$JOB_NAME" "$GIT_REPOSITORY_URL"
 cd ..
 echo "Calling build..."
 build $@
