@@ -44,8 +44,8 @@ aws s3 cp \
       --cache-control "no-cache" \
       --recursive
 
-if [ -f "$REPOSITORY/.circleci/deploy_s3"] ; then
-  $REPOSITORY/.circleci/deploy_s3 $AWS_BUCKET_NAME
+if [ -f "$EXTRACT_DIR/.circleci/deploy_s3"] ; then
+  $EXTRACT_DIR/.circleci/deploy_s3 $AWS_BUCKET_NAME
 fi
 
 if [ -n "$AWS_CLOUDFRONT_DISTRIBUTION" ]; then
