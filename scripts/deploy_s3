@@ -44,7 +44,7 @@ aws s3 cp \
       --cache-control "no-cache" \
       --recursive
 
-if [ -f "$EXTRACT_DIR/.circleci/deploy_s3"] ; then
+if [ -f "$EXTRACT_DIR/.circleci/deploy_s3" ] ; then
   $EXTRACT_DIR/.circleci/deploy_s3 $AWS_BUCKET_NAME
 fi
 
