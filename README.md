@@ -10,6 +10,7 @@ The Aztec build system is agnostic to its underlying platform, but currently our
 - Don't rebuild projects that haven't changed as part of a commit (analyse diffs between commits).
 - Allow fine or coarse grained control, of which file changes within a project, trigger a rebuild.
 - Stateless (apart from the source repository itself, and the target container registry).
+- Enable building on powerful (up to 64 core) EC2 spot instances. They're extremely cheap and powerful relative to Circle CI offerings.
 - Easy to follow build graph on Circle CI.
 - Deploy updated services only on a fully successful build of entire project.
 - No vendor lock-in (don't use vendor specific features).
@@ -55,7 +56,7 @@ At the start of each job, it's necessary to setup the build environment e.g.
 ./build-system/scripts/setup_env "$CIRCLE_SHA1" "$CIRCLE_TAG" "$CIRCLE_JOB" "$CIRCLE_REPOSITORY_URL" "$CIRCLE_BRANCH"
 ```
 
-Once called all scripts are available directly via `PATH` update, and various other env vars expected by scripts are set.
+Once called all scripts are available directly via `PATH` update, and various other env vars expected by scripts are set. You'll want to `source` the above script if you intend to use the build system within the calling shell.
 
 Jobs will usually leverage one of the following scripts. View the scripts themselves for further documentation:
 
