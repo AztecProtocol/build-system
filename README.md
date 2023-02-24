@@ -7,6 +7,9 @@ The Aztec build system is agnostic to its underlying platform, but currently our
 - Monorepo support (or at least, multiple projects within one repoistory).
 - Builds docker containers for simple deployments.
 - Docker layer caching support to minimise rebuild times.
+- Don't rebuild projects that haven't changed as part of a commit (analyse diffs between commits).
+- Allow fine or coarse grained control, of which file changes within a project, trigger a rebuild.
+- Stateless (apart from the source repository itself, and the target container registry).
 - Easy to follow build graph on Circle CI.
 - Deploy updated services only on a fully successful build of entire project.
 - No vendor lock-in (don't use vendor specific features).
