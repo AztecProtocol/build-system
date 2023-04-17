@@ -33,7 +33,7 @@ echo "list_file_diff output:"
 # use a tee and a temp file to do this
 # if list_file_diff fails, exit with failure
 temp_diff_file=$(mktemp)
-{list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | tee temp_diff_file; } || { echo "list_file_diff failed"; exit 1; }
+{ list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | tee "$temp_diff_file"; } || { echo "list_file_diff failed"; exit 1; }
 different_files=$(cat "$temp_diff_file")
 rm "$temp_diff_file"
 
