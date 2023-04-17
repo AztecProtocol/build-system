@@ -1,6 +1,7 @@
 #!/bin/bash
 # Lists files that have changed between two commits, including files in submodules.
 # Needed because `git diff --submodule=diff --name-only` doesn't work as one would hope.
+echo "HERE"
 set -euo pipefail
 
 BASE_COMMIT=$1

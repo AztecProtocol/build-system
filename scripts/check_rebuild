@@ -24,7 +24,9 @@ cat .rebuild_patterns
 
 git config diff.renameLimit 999999
 
-echo "listing file diff"
+echo "list_file_diff ${BASE_COMMIT} ${COMMIT_HASH}"
+
+cat list_file_diff
 
 if list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | grep -f .rebuild_patterns &>/dev/null; then
   echo "Rebuild required."
