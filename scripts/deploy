@@ -13,7 +13,7 @@ deploy_ecr $REPOSITORY
 # Bail out if nothing changed.
 LAST_SUCCESSFUL_COMMIT=$(last_successful_commit $REPOSITORY $DEPLOY_TAG-deployed)
 echo "Last successfully deployed commit: $LAST_SUCCESSFUL_COMMIT"
-if ! check_rebuild "$LAST_SUCCESSFUL_COMMIT" $REPOSITORY; then
+if check_rebuild "$LAST_SUCCESSFUL_COMMIT" $REPOSITORY; then
   echo "No changes detected, skipping deployment."
   exit 0
 fi

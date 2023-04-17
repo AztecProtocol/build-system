@@ -12,7 +12,7 @@ REPOSITORY=$2
 # If a tainted tag exists, remove it and return true to rebuild.
 if image_exists $REPOSITORY tainted; then
   echo "$REPOSITORY has been tainted. Will rebuild."
-  exit 0
+  exit 1
 fi
 
 # Compute .rebuild_patterns from the build manifest.
@@ -24,7 +24,7 @@ cat .rebuild_patterns
 git config diff.renameLimit 999999
 
 if list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | grep -f .rebuild_patterns &>/dev/null; then
-  exit 0
-else
   exit 1
+else
+  exit 0
 fi

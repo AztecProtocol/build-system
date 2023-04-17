@@ -52,7 +52,7 @@ echo "Last successful commit: $LAST_SUCCESSFUL_COMMIT"
 cd $(query_manifest buildDir $REPOSITORY)
 
 # If we have previously successful commit, we can early out if nothing relevant has changed since.
-if ! check_rebuild "$LAST_SUCCESSFUL_COMMIT" $REPOSITORY; then
+if check_rebuild "$LAST_SUCCESSFUL_COMMIT" $REPOSITORY; then
   echo "No rebuild necessary. Retagging..."
   STAGES=$(cat $DOCKERFILE | sed -n -e 's/^FROM .* AS \(.*\)/\1/p')
   for STAGE in $STAGES; do
