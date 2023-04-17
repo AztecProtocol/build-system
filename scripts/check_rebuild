@@ -28,7 +28,7 @@ echo "list_file_diff ${BASE_COMMIT} ${COMMIT_HASH}"
 
 cat `which list_file_diff`
 
-if list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | grep -f .rebuild_patterns &>/dev/null; then
+if list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | grep -f .rebuild_patterns; then
   echo "Rebuild required."
   exit 1
 else
