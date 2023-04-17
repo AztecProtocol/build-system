@@ -20,6 +20,7 @@ for SUBMODULE_PATH in $(git config --file .gitmodules --get-regexp path | awk '{
   if [ "$(git ls-tree $BASE_COMMIT $SUBMODULE_PATH | awk '{print $2}')" = "tree" ]; then
     # In the base commit, we were not a submodule, and now we are. Output all files as having changed.
     pushd $SUBMODULE_PATH > /dev/null
+    git ls-files | awk "\$0=\"$SUBMODULE_PATH/\"\$0"
     popd > /dev/null
     continue
   fi
