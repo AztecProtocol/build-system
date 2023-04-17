@@ -19,6 +19,7 @@ fi
 # Compute .rebuild_patterns from the build manifest.
 query_manifest rebuildPatterns $REPOSITORY > .rebuild_patterns
 
+echo "Rebuild patterns:"
 cat .rebuild_patterns
 
 git config diff.renameLimit 999999
