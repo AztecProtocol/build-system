@@ -19,28 +19,16 @@ fi
 # Compute .rebuild_patterns from the build manifest.
 query_manifest rebuildPatterns $REPOSITORY > .rebuild_patterns
 
-echo "Rebuild patterns:"
 cat .rebuild_patterns
 
 git config diff.renameLimit 999999
 
-echo "list_file_diff ${BASE_COMMIT} ${COMMIT_HASH}"
-
-cat `which list_file_diff`
-
-echo "list_file_diff output:"
-# run list_file_diff, but make sure output goes to console and is also captured in a variable
-# use a tee and a temp file to do this
-# if list_file_diff fails, exit with failure
-temp_diff_file=$(mktemp)
-{
-  list_file_diff ${BASE_COMMIT} ${COMMIT_HASH} | tee "$temp_diff_file";
-} || {
-  rm -f "$temp_diff_file";
-  echo "list_file_diff failed. Rebuild required";
+# run list_file_diff, but make sure output goes to console (via tee+stderr)
+# while also being captured in a variable. Exit with a message on failure.
+different_files=$(ls | tee /dev/stderr) || {
+  echo "list_file_diff failed. Rebuild required.";
   exit 1;
 }
-different_files=$(cat "$temp_diff_file") && rm "$temp_diff_file"
 
 
 if grep -f .rebuild_patterns <<< "$different_files" &> /dev/null; then
