@@ -6,14 +6,18 @@ set -euo pipefail
 BASE_COMMIT=$1
 COMMIT_HASH=${2:-HEAD}
 
+echo "Listing file diff between $BASE_COMMIT and $COMMIT_HASH"
+
 if [ -z "$BASE_COMMIT" ]; then
   echo "Usage $0 from_commit [to_commit]"
   exit 1
 fi
 
+echo "cding to $ROOT_PATH"
 cd $ROOT_PATH
 
-echo "Listing file diff between $BASE_COMMIT and $COMMIT_HASH"
+echo "doing a git diff"
+echo "diff: $(git --no-pager diff --name-only ${BASE_COMMIT} ${COMMIT_HASH})"
 git --no-pager diff --name-only ${BASE_COMMIT} ${COMMIT_HASH}
 
 echo "iterating over submodules"
