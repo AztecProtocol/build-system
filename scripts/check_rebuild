@@ -24,13 +24,16 @@ cat .rebuild_patterns
 
 git config diff.renameLimit 999999
 
-# Get list of files that differ
-different_files=$(list_file_diff ${BASE_COMMIT} ${COMMIT_HASH}) || {
+# Get list of files that differ and put them into an array via ()
+different_files=($(list_file_diff ${BASE_COMMIT} ${COMMIT_HASH})) || {
   echo "list_file_diff failed. Rebuild required.";
   exit 1;
 }
 
-if grep -f .rebuild_patterns <<< "$different_files" &> /dev/null; then
+echo "grep output (grep -f .rebuild_patterns "${different_files[@]}"):"
+echo `grep -f .rebuild_patterns "${different_files[@]}"`
+
+if grep -f .rebuild_patterns "${different_files[@]}" &> /dev/null; then
   echo "Rebuild required."
   exit 1
 else
