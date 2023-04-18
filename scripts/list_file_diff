@@ -19,14 +19,12 @@ for SUBMODULE_PATH in $(git config --file .gitmodules --get-regexp path | awk '{
   [ -f $SUBMODULE_PATH/.git ] || continue
   if [ "$(git ls-tree $BASE_COMMIT $SUBMODULE_PATH | awk '{print $2}')" = "tree" ]; then
     # In the base commit, we were not a submodule, and now we are. Output all files as having changed.
-    pushd $SUBMODULE_PATH > /dev/null
-    git ls-files | awk "\$0=\"$SUBMODULE_PATH/\"\$0"
-    popd > /dev/null
+    (cd $SUBMODULE_PATH &&
+     git ls-files | awk "\$0=\"$SUBMODULE_PATH/\"\$0")
     continue
   fi
   SM_PREV_HASH=$(git ls-tree $BASE_COMMIT $SUBMODULE_PATH | awk '{print $3}')
   SM_CURR_HASH=$(git ls-tree $COMMIT_HASH $SUBMODULE_PATH | awk '{print $3}')
-  pushd $SUBMODULE_PATH > /dev/null
-  git --no-pager diff --name-only ${SM_PREV_HASH} ${SM_CURR_HASH} | awk "\$0=\"$SUBMODULE_PATH/\"\$0"
-  popd > /dev/null
+  (cd $SUBMODULE_PATH &&
+   git --no-pager diff --name-only ${SM_PREV_HASH} ${SM_CURR_HASH} | awk "\$0=\"$SUBMODULE_PATH/\"\$0")
 done
