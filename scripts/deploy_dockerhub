@@ -1,14 +1,10 @@
 #!/bin/bash
 set -e
 
-if [ -z "$COMMIT_TAG" ]; then
-  echo "Will only push tagged builds to dockerhub. Skipping."
-  exit 0
-fi
-
 REPOSITORY=$1
+IMAGE_TAG=${2:-$COMMIT_TAG}
 IMAGE_COMMIT_URI=$ECR_DEPLOY_URL/$REPOSITORY:$COMMIT_HASH
-IMAGE_DEPLOY_URI=aztecprotocol/$REPOSITORY:$COMMIT_TAG
+IMAGE_DEPLOY_URI=aztecprotocol/$REPOSITORY:$IMAGE_TAG
 
 echo "Deploying to dockerhub: $IMAGE_DEPLOY_URI"
 
