@@ -57,4 +57,4 @@ jq '{name, version, exports, main, homepage, author, type, license, dependencies
   package.json > $TMP && mv $TMP package.json
 
 # Publish
-npm publish $TAG_ARG
+npm publish $TAG_ARG --access public
