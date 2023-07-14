@@ -17,7 +17,7 @@ The Aztec build system is agnostic to its underlying platform, but currently our
 
 ## Overview
 
-We will assume Circle CI is the orchestrion platform
+We will assume Circle CI is the orchestration platform
 
 There are scripts that are called from the `.circleci/config.yml` that could be fairly easily run elsewhere if needed. They are located in the `scripts` folder, and are added to `PATH` so they can be called from project directories. The actual building of the services and libraries are all done with Dockerfiles.
 
