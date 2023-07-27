@@ -1,0 +1,18 @@
+#!/bin/bash
+# TODO(AD): This is a hack to change CPU spec. 
+# TODO(AD): If this ends up worth it, we can add a parameter to existing scripts instead.
+set -e
+SCRIPT_PATH=$1
+REPOSITORY=$2
+shift
+shift
+
+init_submodules $REPOSITORY
+
+cd $(query_manifest projectDir $REPOSITORY)
+
+mkdir -p /tmp/test-logs
+
+set -o pipefail
+# We use 4 CPUs, in case there's other processes that get kicked off
+cond_spot_run_script $REPOSITORY $JOB_NAME 4 $SCRIPT_PATH $@ | tee "/tmp/test-logs/$JOB_NAME.log"
