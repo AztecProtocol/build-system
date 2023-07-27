@@ -19,4 +19,11 @@ CODE=$?
 echo "Terminating spot instance..."
 ssh -F $SSH_CONFIG_PATH $IP sudo halt -p > /dev/null 2>&1
 
+# Kill spot request so it doesn't count against quota.
+if [ -f "sir-$COMMIT_HASH:$JOB_NAME.txt" ]; then
+    SIR=$(cat sir-$COMMIT_HASH:$JOB_NAME.txt)
+    echo "Cancelling spot instance request $SIR"
+    aws ec2 cancel-spot-instance-requests --spot-instance-request-ids $SIR > /dev/null
+fi
+
 exit $CODE
