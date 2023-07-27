@@ -43,6 +43,9 @@ if [ -z "$IID" -o "$IID" == "None" ]; then
     --cli-input-json file://$BUILD_SYSTEM_PATH/remote/${CPUS}core.json \
     --query "Instances[*].[InstanceId]" \
     --output text)
+else
+  # Write down spot request ID so we can cancel once we finish
+  echo $SIR > sir-$NAME.txt
 fi
 
 aws ec2 create-tags --resources $IID --tags "Key=Name,Value=$NAME"
