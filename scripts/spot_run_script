@@ -9,7 +9,7 @@ function on_exit {
     if [ -f "sir-$COMMIT_HASH:$JOB_NAME.txt" ]; then
         SIR=$(cat sir-$COMMIT_HASH:$JOB_NAME.txt)
         echo "Cancelling spot instance request $SIR (silently)"
-        aws ec2 cancel-spot-instance-requests --spot-instance-request-ids $SIR 2>&1 > /dev/null || true
+        aws ec2 cancel-spot-instance-requests --spot-instance-request-ids $SIR >/dev/null 2>&1 || true
     fi
 }
 trap on_exit EXIT
