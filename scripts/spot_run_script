@@ -4,6 +4,16 @@
 # 2... ARGS: Arguments to pass to remote_run_script.
 set -e
 
+# On any sort of exit (error or not), kill spot request so it doesn't count against quota.
+function on_exit {
+    if [ -f "sir-$COMMIT_HASH:$JOB_NAME.txt" ]; then
+        SIR=$(cat sir-$COMMIT_HASH:$JOB_NAME.txt)
+        echo "Cancelling spot instance request $SIR (silently)"
+        aws ec2 cancel-spot-instance-requests --spot-instance-request-ids $SIR 2>&1 > /dev/null || true
+    fi
+}
+trap on_exit EXIT
+
 SPEC=$1
 shift
 
@@ -18,12 +28,5 @@ CODE=$?
 # Shutdown spot.
 echo "Terminating spot instance..."
 ssh -F $SSH_CONFIG_PATH $IP sudo halt -p > /dev/null 2>&1
-
-# Kill spot request so it doesn't count against quota.
-if [ -f "sir-$COMMIT_HASH:$JOB_NAME.txt" ]; then
-    SIR=$(cat sir-$COMMIT_HASH:$JOB_NAME.txt)
-    echo "Cancelling spot instance request $SIR"
-    aws ec2 cancel-spot-instance-requests --spot-instance-request-ids $SIR > /dev/null
-fi
 
 exit $CODE
