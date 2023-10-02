@@ -27,7 +27,11 @@ fi
 
 pushd $TF_DIR > /dev/null
 AWS_BUCKET_NAME=$(terraform output s3)
+TEMP="${AWS_BUCKET_NAME%\"}"
+AWS_BUCKET_NAME="${TEMP#\"}"
 AWS_CLOUDFRONT_DISTRIBUTION=$(terraform output cloudfront || echo "")
+TEMP="${AWS_CLOUDFRONT_DISTRIBUTION%\"}"
+AWS_CLOUDFRONT_DISTRIBUTION="${TEMP#\"}"
 popd > /dev/null
 
 aws s3 rm s3://$AWS_BUCKET_NAME --recursive
